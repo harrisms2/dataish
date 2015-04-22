@@ -61,15 +61,20 @@ id_ = None
 df2 = pd.DataFrame(columns=['id','exit_rr','entry_cc'])
 
 for index, row in df.iterrows():
+    # first RR for this ID
     if row[2] == 'RR'and not id_:
         id_ = row[0]
         rr_dt = row[1]
+    # new ID, but did not have a CC for the last RR
     elif row[2] == 'RR' and id_ != row[0] and rr_dt:
         df2.loc[i] = [id_, rr_dt, None]
         id_ = None
         rr_dt = None
         i = i + 1
         id_ = row[0]
+        rr_dt = row[1]
+    # same ID, but new row for RR
+    elif row[2] == 'RR' and id_ == row[0] and rr_dt:
         rr_dt = row[1]
     elif row[2] == 'CC' and id_ == row[0] and rr_dt:
         df2.loc[i] = [id_, rr_dt, row[1]]
